@@ -1,0 +1,68 @@
+{
+  "name": "novacentral-server",
+  "version": "1.0.0",
+  "description": "NovaCentral Backend API (Auth + ROI + Referral)",
+  "main": "src/server.js",
+  "type": "module",
+  "engines": {
+    "node": "20.x"
+  },
+  "scripts": {
+    "dev": "nodemon --exec node --expose-gc --max-old-space-size=1024 src/server.js",
+    "start": "node --expose-gc --max-old-space-size=1024 src/server.js",
+    "start:api": "cross-env NOVA_SERVICE=api node --expose-gc --max-old-space-size=1024 src/server.js",
+    "start:hybrid": "node --expose-gc --max-old-space-size=1024 src/hybridService.js",
+    "worker:deposit": "node --expose-gc --max-old-space-size=1024 src/worker.js",
+    "test:e2e-hybrid": "node scripts/e2eHybridRuntimeTest.js",
+    "test:load-health": "node scripts/loadTestHealth.mjs",
+    "pm2:prod": "pm2 start ecosystem.config.cjs",
+    "verify:redis": "node scripts/verifyRedis.mjs",
+    "wallet:normalize": "node scripts/walletNormalizationFix.mjs",
+    "withdraw:backfill-risk": "node scripts/backfillWithdrawRisk.js",
+    "deposit:backfill-qualified": "node scripts/backfillQualifiedDeposits.js",
+    "deposit:recovery": "node scripts/backfillDepositRecovery.js",
+    "deposit:recovery-backfill": "node --expose-gc --max-old-space-size=1024 scripts/backfillDepositRecovery.js",
+    "ledger:reconcile": "node scripts/reconcileHybridLedger.js",
+    "ledger:fix-mismatch": "node scripts/fixLedgerMismatch.js",
+    "referral:backfill": "node scripts/backfillReferral.js",
+    "db:ensure-indexes": "node scripts/ensureProductionIndexes.js",
+    "test:p0-financial-safety": "node scripts/p0FinancialSafetySimulation.js",
+    "test:hybrid-roi-rates": "node scripts/testHybridRoiRates.mjs",
+    "test:hybrid-roi-principal": "node scripts/testHybridRoiPrincipalBase.mjs",
+    "test:hybrid-business-rules": "node scripts/testHybridBusinessRules.mjs",
+    "test:deposit-withdraw-lock": "node scripts/testDepositWithdrawLockRemoved.mjs",
+    "test:first-deposit-bonus": "node scripts/testFirstDepositBonus.mjs",
+    "test:salary-hardening": "node scripts/testSalarySystemHardening.mjs"
+  },
+  "keywords": [
+    "nova",
+    "defi",
+    "backend",
+    "express",
+    "mongodb"
+  ],
+  "author": "NovaCentral",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "bullmq": "^5.76.3",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "csurf": "^1.11.0",
+    "dotenv": "^17.4.2",
+    "ethers": "^6.16.0",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.4.1",
+    "helmet": "^8.1.0",
+    "ioredis": "^5.10.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.5.0",
+    "morgan": "^1.10.1",
+    "node-cron": "^4.2.1"
+  },
+  "devDependencies": {
+    "cross-env": "^10.1.0",
+    "nodemon": "^3.1.14",
+    "pm2": "^6.0.14"
+  }
+}
