@@ -18,7 +18,7 @@ import LiveRefreshIndicator from "../../../components/LiveRefreshIndicator";
 import RewardNotification from "../../../components/dashboard/RewardNotification";
 
 const CARD = "rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl";
-const ROI_POLL_INTERVAL_MS = 2500;
+const ROI_POLL_INTERVAL_MS = 700;
 const ROI_POLL_MAX_ELAPSED_MS = 180_000;
 const ROI_FAILURE_MSG = "Unable to process payout. Please retry.";
 const ROI_ACTIVE_STATUSES = new Set(["queued", "processing", "broadcasting"]);
