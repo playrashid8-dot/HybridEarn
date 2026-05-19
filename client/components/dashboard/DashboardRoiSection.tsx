@@ -14,7 +14,6 @@ type Props = {
   hybrid: Record<string, unknown> | null | undefined;
   roiLoading: boolean;
   handleClaimRoi: () => void;
-  roiProgressLabel?: string | null;
   celebrationUsd: number | null;
   onCelebrationDismiss: () => void;
 };
@@ -24,7 +23,6 @@ export default function DashboardRoiSection({
   hybrid,
   roiLoading,
   handleClaimRoi,
-  roiProgressLabel,
   celebrationUsd,
   onCelebrationDismiss,
 }: Props) {
@@ -68,12 +66,12 @@ export default function DashboardRoiSection({
   if (roiLoading) {
     buttonInner = (
       <>
-        <span className="relative h-5 w-5 shrink-0" aria-hidden>
+        <span className="relative h-[18px] w-[18px] shrink-0" aria-hidden>
           <span className="absolute inset-0 rounded-full border-2 border-gray-950/20" />
           <span className="absolute inset-0 animate-spin rounded-full border-2 border-transparent border-t-gray-950 shadow-[0_0_16px_rgba(6,78,59,0.65)]" />
           <span className="absolute inset-1 rounded-full bg-gray-950/15" />
         </span>
-        {roiProgressLabel || "Processing Secure Payout..."}
+        Processing...
       </>
     );
   } else if (claimedTodayPkt) {
@@ -107,21 +105,6 @@ export default function DashboardRoiSection({
               <span className="font-semibold text-emerald-200">{formatHms(countdown)}</span>
             </p>
           ) : null}
-          <AnimatePresence mode="wait">
-            {roiLoading && roiProgressLabel ? (
-              <motion.div
-                key="roi-secure-processing"
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -4 }}
-                transition={{ duration: 0.22, ease: "easeOut" }}
-                className="inline-flex items-center gap-2 rounded-full border border-emerald-400/25 bg-emerald-400/[0.08] px-3 py-1.5 text-[11px] font-semibold text-emerald-100 shadow-[0_0_24px_rgba(16,185,129,0.12)]"
-              >
-                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-300 shadow-[0_0_12px_rgba(110,231,183,0.9)]" />
-                {roiProgressLabel}
-              </motion.div>
-            ) : null}
-          </AnimatePresence>
         </div>
 
         <motion.button
@@ -129,10 +112,14 @@ export default function DashboardRoiSection({
           onClick={handleClaimRoi}
           disabled={buttonDisabled}
           aria-busy={roiLoading}
+          aria-label={roiLoading ? "Processing ROI claim" : undefined}
+          animate={roiLoading ? { scale: [1, 1.015, 1] } : { scale: 1 }}
+          transition={roiLoading ? { duration: 1.2, repeat: Infinity, ease: "easeInOut" } : { duration: 0.18 }}
+          whileHover={buttonDisabled ? undefined : { y: -1 }}
           whileTap={buttonDisabled ? undefined : { scale: 0.98 }}
-          className={`relative inline-flex min-h-[48px] w-full shrink-0 items-center justify-center gap-2 overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-500 via-green-400 to-cyan-300 bg-[length:180%_100%] px-6 py-3 text-sm font-black text-gray-950 shadow-[0_0_24px_rgba(52,211,153,0.22)] ring-1 ring-emerald-300/30 transition duration-300 ease-out hover:bg-right hover:brightness-110 disabled:cursor-not-allowed sm:w-auto sm:min-w-[160px] ${
+          className={`relative inline-flex min-h-[48px] w-full shrink-0 items-center justify-center gap-2 overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-500 via-green-400 to-cyan-300 bg-[length:180%_100%] px-6 py-3 text-sm font-black text-gray-950 shadow-[0_0_24px_rgba(52,211,153,0.22)] ring-1 ring-emerald-300/30 transition-[filter,box-shadow,background-position,opacity] duration-300 ease-out hover:bg-right hover:brightness-110 active:shadow-[0_0_38px_rgba(52,211,153,0.5)] disabled:cursor-not-allowed sm:w-auto sm:min-w-[160px] ${
             roiLoading
-              ? "opacity-100 shadow-[0_0_34px_rgba(52,211,153,0.42)]"
+              ? "opacity-100 shadow-[0_0_40px_rgba(52,211,153,0.5),inset_0_1px_0_rgba(255,255,255,0.3)]"
               : "disabled:opacity-60 disabled:shadow-[0_0_22px_rgba(52,211,153,0.16)]"
           }`}
         >
@@ -152,11 +139,13 @@ export default function DashboardRoiSection({
 
     </div>
 
-    <AnimatePresence>
+    <AnimatePresence mode="wait">
       {celebrationUsd != null && Number.isFinite(celebrationUsd) ? (
         <motion.div
           key="roi-success-overlay"
-          role="status"
+          role="dialog"
+          aria-modal="true"
+          aria-label="ROI claimed successfully"
           aria-live="polite"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -203,9 +192,6 @@ export default function DashboardRoiSection({
             >
               +{celebrationUsd.toFixed(2)} USDT
             </motion.p>
-            <p className="relative mt-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-emerald-100/70">
-              Balance updated
-            </p>
           </motion.div>
         </motion.div>
       ) : null}

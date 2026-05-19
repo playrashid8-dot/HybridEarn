@@ -20,7 +20,6 @@ import RewardNotification from "../../../components/dashboard/RewardNotification
 const CARD = "rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl";
 const ROI_POLL_INTERVAL_MS = 2500;
 const ROI_POLL_MAX_ELAPSED_MS = 180_000;
-const ROI_PROCESSING_LABEL = "Processing Secure Payout...";
 const ROI_FAILURE_MSG = "Unable to process payout. Please retry.";
 const ROI_ACTIVE_STATUSES = new Set(["queued", "processing", "broadcasting"]);
 const ROI_TRANSIENT_FAILED_STATES = new Set(["status_unavailable"]);
@@ -148,7 +147,6 @@ export default function Dashboard() {
   const router = useRouter();
 
   const [roiLoading, setRoiLoading] = useState(false);
-  const [roiProgressLabel, setRoiProgressLabel] = useState<string | null>(null);
   const [roiCelebrationUsd, setRoiCelebrationUsd] = useState<number | null>(null);
   const [roiPendingJobId, setRoiPendingJobId] = useState<string | null>(null);
   const [roiPollingStartedAt, setRoiPollingStartedAt] = useState<number | null>(null);
@@ -197,7 +195,6 @@ export default function Dashboard() {
     setRoiPendingJobId(null);
     setRoiPollingStartedAt(null);
     setRoiLoading(false);
-    setRoiProgressLabel(null);
   }, [roiPendingJobId]);
 
   const refreshDashboardAfterRoi = useCallback(async (reason: string, creditedAmount?: number) => {
@@ -285,8 +282,6 @@ export default function Dashboard() {
           });
           roiLastStatusRef.current = queueStatus;
         }
-        setRoiProgressLabel(ROI_PROCESSING_LABEL);
-
         if (queueStatus === "completed" || status?.claimedTodayPkt === true) {
           await finishRoiClaim(queue?.result || null, "completed");
           return;
@@ -325,7 +320,6 @@ export default function Dashboard() {
         });
         if (cancelled || !isMountedRef.current) return;
         roiPollErrorCountRef.current += 1;
-        setRoiProgressLabel(ROI_PROCESSING_LABEL);
       } finally {
         roiPollInFlightRef.current = false;
       }
@@ -368,7 +362,6 @@ export default function Dashboard() {
       setRoiLoading(true);
       setRoiClaimSucceeded(false);
       setRoiCelebrationUsd(null);
-      setRoiProgressLabel(ROI_PROCESSING_LABEL);
       roiSuccessHandledRef.current = false;
       roiRewardBeforeClaimRef.current = rewardUsd;
       roiPollErrorCountRef.current = 0;
@@ -400,7 +393,6 @@ export default function Dashboard() {
       roiClaimInFlightRef.current = false;
       if (!queuedStarted && !roiPendingJobId) {
         setRoiLoading(false);
-        setRoiProgressLabel(null);
       }
     }
   };
@@ -435,7 +427,7 @@ export default function Dashboard() {
                 label="Total Balance"
                 value={formatUsd(totalBalanceUsd)}
                 animatedValue={totalBalanceUsd}
-                live={roiLoading || roiClaimSucceeded}
+                live={roiClaimSucceeded}
               />
               <VipStatTile
                 variant="plan"
@@ -466,7 +458,6 @@ export default function Dashboard() {
               hybrid={hybrid}
               roiLoading={roiLoading}
               handleClaimRoi={handleClaimRoi}
-              roiProgressLabel={roiProgressLabel}
               celebrationUsd={roiCelebrationUsd}
               onCelebrationDismiss={dismissRoiCelebration}
             />
