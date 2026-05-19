@@ -1,0 +1,370 @@
+
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+/* ============================= */
+/* 🌌 GLOBAL RESET */
+/* ============================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #0b0f19;
+  color: white;
+  font-family: system-ui, sans-serif;
+  overflow-x: hidden;
+}
+
+/* Design system: glass cards + soft elevation (8px grid, Web3 dark) */
+.bg-card {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.shadow-soft {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.28), 0 0 0 1px rgba(255, 255, 255, 0.04);
+}
+
+.shadow-glow-emerald {
+  box-shadow: 0 0 40px rgba(16, 185, 129, 0.18), 0 12px 40px rgba(0, 0, 0, 0.35);
+}
+
+:root {
+  --brand-primary: #10b981;
+  --brand-secondary: #3b82f6;
+  --brand-success: #10b981;
+  --brand-warning: #f59e0b;
+  --brand-danger: #ef4444;
+  --brand-dark: #0b0f19;
+  --brand-card: #111827;
+}
+
+::selection {
+  background: rgba(168, 85, 247, 0.35);
+  color: #ffffff;
+}
+
+button,
+input {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:disabled,
+input:disabled {
+  cursor: not-allowed;
+}
+
+
+/* ============================= */
+/* 🌠 PREMIUM BACKGROUND */
+/* ============================= */
+.glow-bg {
+  position: relative;
+  background: radial-gradient(circle at top, #0b0b12, #040406);
+}
+
+.glow-bg::before {
+  content: "";
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  background: #7c3aed;
+  opacity: 0.15;
+  filter: blur(160px);
+  top: -150px;
+  left: -150px;
+  z-index: 0;
+}
+
+.glow-bg::after {
+  content: "";
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  background: #4f46e5;
+  opacity: 0.15;
+  filter: blur(160px);
+  bottom: -150px;
+  right: -150px;
+  z-index: 0;
+}
+
+
+/* ============================= */
+/* ✨ GRID OVERLAY */
+/* ============================= */
+.grid-bg {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(
+    rgba(255, 255, 255, 0.06) 1px,
+    transparent 1px
+  );
+  background-size: 26px 26px;
+  pointer-events: none;
+}
+
+
+/* ============================= */
+/* 💎 GLASS CARD */
+/* ============================= */
+.glow-card {
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.08),
+    rgba(124, 58, 237, 0.08)
+  );
+  backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  padding: 16px;
+  box-shadow: 0 20px 60px rgba(124, 58, 237, 0.2);
+  transition: all 0.3s ease;
+}
+
+.glow-card:hover {
+  border-color: rgba(168, 85, 247, 0.4);
+  box-shadow: 0 0 30px rgba(139, 92, 246, 0.4);
+  transform: translateY(-2px);
+}
+
+
+/* ============================= */
+/* 🔥 TEXT GLOW */
+/* ============================= */
+.text-glow {
+  text-shadow: 0 0 12px rgba(139, 92, 246, 0.6);
+}
+
+.vip-title {
+  background: linear-gradient(90deg, #c4b5fd, #a855f7, #60a5fa);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.vip-border {
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background:
+    linear-gradient(#090910, #090910) padding-box,
+    linear-gradient(135deg, rgba(168, 85, 247, 0.9), rgba(79, 70, 229, 0.8), rgba(96, 165, 250, 0.7)) border-box;
+  border: 1px solid transparent;
+}
+
+.vip-pulse {
+  animation: vipPulse 2.8s ease-in-out infinite;
+}
+
+@keyframes vipPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 28px rgba(124, 58, 237, 0.32);
+  }
+  50% {
+    box-shadow: 0 0 48px rgba(168, 85, 247, 0.58);
+  }
+}
+
+
+/* ============================= */
+/* 🎯 BUTTON PREMIUM */
+/* ============================= */
+.btn-primary {
+  background: linear-gradient(135deg, #7c3aed, #a855f7, #4f46e5);
+  border-radius: 12px;
+  padding: 10px 16px;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.btn-primary:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
+}
+
+
+/* ============================= */
+/* 📱 BOTTOM NAV */
+/* ============================= */
+.bottom-nav {
+  position: fixed;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 95%;
+  max-width: 420px;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  display: flex;
+  justify-content: space-around;
+  padding: 12px;
+  z-index: 50;
+}
+
+
+/* ============================= */
+/* ⚡ SCROLLBAR */
+/* ============================= */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #040406;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(#7c3aed, #4f46e5);
+  border-radius: 10px;
+}
+
+
+/* ============================= */
+/* 🎬 ANIMATIONS */
+/* ============================= */
+.fade-in {
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* ============================= */
+/* 💡 UTILITIES */
+/* ============================= */
+.card {
+  @apply glow-card;
+}
+
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Deposit detected — subtle credit highlight */
+@keyframes deposit-detected {
+  0% {
+    background-color: rgba(16, 185, 129, 0.22);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.45);
+  }
+  100% {
+    background-color: transparent;
+    box-shadow: 0 0 0 12px transparent;
+  }
+}
+
+.deposit-row-highlight {
+  animation: deposit-detected 1.25s ease-out;
+}
+
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+.admin-snap-nav {
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: 1rem;
+  -webkit-overflow-scrolling: touch;
+}
+
+.admin-snap-nav > * {
+  scroll-snap-align: start;
+}
+
+.admin-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.admin-shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
+  animation: adminShimmer 1.45s infinite;
+}
+
+@keyframes adminShimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.admin-live-pulse {
+  animation: adminLivePulse 1.35s ease-in-out infinite;
+}
+
+@keyframes adminLivePulse {
+  0%,
+  100% {
+    filter: brightness(1);
+    box-shadow: 0 0 10px rgba(34, 211, 238, 0.2);
+  }
+  50% {
+    filter: brightness(1.35);
+    box-shadow: 0 0 18px rgba(34, 211, 238, 0.48);
+  }
+}
+
+.admin-ticker-mask {
+  mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+}
+
+.admin-event-ticker {
+  animation: adminTicker 34s linear infinite;
+}
+
+.admin-event-ticker:hover {
+  animation-play-state: paused;
+}
+
+@keyframes adminTicker {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-shimmer::after,
+  .admin-live-pulse,
+  .admin-event-ticker,
+  .vip-pulse,
+  .fade-in,
+  .deposit-row-highlight {
+    animation: none;
+  }
+}

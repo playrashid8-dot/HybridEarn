@@ -1,0 +1,22 @@
+---
+description: 
+alwaysApply: true
+---
+
+Project: NovaCentral (Next.js + Node.js + MongoDB)
+
+Rules:
+
+- Always use axios withCredentials: true
+- Auth uses httpOnly cookies (NO localStorage tokens)
+- Backend must return { success, msg, data }
+- Always validate inputs (amount > 0, required fields)
+- Use req.user._id (NOT id)
+- Never break existing modules
+- Do NOT change unrelated files
+- Prevent duplicate transactions (txHash must be unique)
+- Use atomic DB operations (avoid race conditions)
+- All APIs must handle errors properly (try/catch)
+- Never expose sensitive data (private keys, secrets)
+- Follow existing project structure
+- Keep responses consistent across frontend & backend
