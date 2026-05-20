@@ -24,6 +24,7 @@ import {
 import depositPipelineConfig from "../../config/depositPipelineConfig.js";
 import { registerShutdownHook } from "../../infra/processLifecycle.js";
 import logger from "../../utils/logger.js";
+import HybridSetting from "../models/HybridSetting.js";
 import {
   resolveRecipientsUsersByWalletMap,
 } from "../utils/walletUserLookup.js";

@@ -21,6 +21,13 @@ import {
   registerShutdownHook,
 } from "./infra/processLifecycle.js";
 import logger from "./utils/logger.js";
+import {
+  getCsurfMiddlewareOptions,
+  getXsrfTokenCookieOptions,
+  logCookieConfig,
+  logCsrfFailure,
+  XSRF_TOKEN_COOKIE_NAME,
+} from "./config/cookieConfig.js";
 import { WORKER_HEARTBEAT_KEY } from "./queues/workerSignals.js";
 import { startDepositPipelineMonitor } from "./infra/runtimeDepositMonitor.js";
 
@@ -68,7 +75,7 @@ const isProd =
   process.env.NODE_ENV === "production" ||
   process.env.RAILWAY_ENVIRONMENT === "production";
 
-const crossSiteSameSite = isProd ? "none" : "lax";
+logCookieConfig("server-bootstrap");
 
 const corsDefaultOrigins = [
   "https://hybridearn.com",
@@ -76,20 +83,15 @@ const corsDefaultOrigins = [
   "https://novacentral.vercel.app",
   "http://localhost:3000",
   "http://72.62.193.42:3000",
+  "http://72.62.193.42",
 ];
 const corsExtraOrigins = String(process.env.CLIENT_ORIGINS || "")
   .split(",")
   .map((s) => s.trim())
   .filter(Boolean);
-const corsOrigins = [...corsDefaultOrigins, ...corsExtraOrigins];
+const corsOrigins = [...new Set([...corsDefaultOrigins, ...corsExtraOrigins])];
 
-const csrfProtection = csrf({
-  cookie: {
-    httpOnly: true,
-    secure: isProd,
-    sameSite: crossSiteSameSite,
-  },
-});
+const csrfProtection = csrf(getCsurfMiddlewareOptions());
 
 const corsConfig = {
   origin: corsOrigins,
@@ -214,13 +216,7 @@ app.get("/api/csrf-token", (req, res) => {
    * csurf stores the CSRF secret in `_csrf` (httpOnly); this handler only sets readable `XSRF-TOKEN`.
    * Does not touch the JWT `token` cookie.
    */
-  res.cookie("XSRF-TOKEN", token, {
-    httpOnly: false,
-    secure: isProd,
-    sameSite: isProd ? "none" : "lax",
-    path: "/",
-    maxAge: 24 * 60 * 60 * 1000,
-  });
+  res.cookie(XSRF_TOKEN_COOKIE_NAME, token, getXsrfTokenCookieOptions());
 
   res.json({
     success: true,
@@ -302,6 +298,7 @@ app.use((req, res) => {
 ============================== */
 app.use((err, req, res, next) => {
   if (err?.code === "EBADCSRFTOKEN") {
+    logCsrfFailure(req, err?.message || "EBADCSRFTOKEN");
     return res.status(403).json({
       success: false,
       msg: "Invalid or missing CSRF token",

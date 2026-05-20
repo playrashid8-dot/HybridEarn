@@ -20,10 +20,16 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
 
   function loginErrorMessage(err: unknown): string {
-    const e = err as { response?: { status?: number; data?: { msg?: string } } };
+    const e = err as { response?: { status?: number; data?: { msg?: string } }; message?: string; code?: string };
     const status = e?.response?.status;
     const msg = String(e?.response?.data?.msg || "").trim();
     const lower = msg.toLowerCase();
+    if (!e?.response) {
+      return "Cannot reach the server. Check your connection and that the API is running.";
+    }
+    if (status === 403 && lower.includes("csrf")) {
+      return "Session security check failed. Refresh the page and try again.";
+    }
     if (status === 400 && lower.includes("invalid credential")) {
       return "Invalid username or password";
     }

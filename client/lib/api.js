@@ -127,6 +127,11 @@ API.interceptors.response.use(
 
   async (error) => {
     if (!error.response) {
+      devWarn("Network error — API unreachable or cookies blocked", {
+        message: error.message,
+        baseURL: BASE_URL,
+        code: error.code,
+      });
       return Promise.reject(error);
     }
 

@@ -12,57 +12,18 @@ import {
   stripTrialFieldsFromClientUser,
 } from "../hybrid/services/trialService.js";
 import logger from "../utils/logger.js";
-
-const TOKEN_COOKIE_NAME = "token";
-
-/** Align browser cookie lifetime with JWT `expiresIn` (string or seconds number). */
-const jwtExpiresInToMaxAgeMs = (expiresIn) => {
-  if (expiresIn == null || expiresIn === "") {
-    return 7 * 24 * 60 * 60 * 1000;
-  }
-  if (typeof expiresIn === "number" && Number.isFinite(expiresIn)) {
-    return Math.floor(expiresIn * 1000);
-  }
-  const raw = String(expiresIn).trim();
-  if (/^\d+$/.test(raw)) {
-    return Math.floor(Number(raw) * 1000);
-  }
-  const compact = /^(\d+)\s*([smhd])/i.exec(raw.replace(/\s/g, ""));
-  if (!compact) {
-    return 7 * 24 * 60 * 60 * 1000;
-  }
-  const amount = Number(compact[1]);
-  const u = compact[2].toLowerCase();
-  const units = {
-    s: 1000,
-    m: 60 * 1000,
-    h: 60 * 60 * 1000,
-    d: 24 * 60 * 60 * 1000,
-  };
-  return Math.floor(amount * (units[u] || units.d));
-};
-
-const getCookieOptions = (overrides = {}) => {
-  const isProd =
-    process.env.NODE_ENV === "production" ||
-    process.env.RAILWAY_ENVIRONMENT === "production";
-
-  const maxAge = jwtExpiresInToMaxAgeMs(process.env.JWT_EXPIRES_IN);
-
-  /** Production cross-origin SPA (e.g. Vercel → API): SameSite=None + Secure. Never use Strict for admins — cookie would not attach to credentialed API calls from another site. */
-  return {
-    httpOnly: true,
-    secure: isProd,
-    sameSite: isProd ? "none" : "lax",
-    path: "/",
-    maxAge,
-    ...overrides,
-  };
-};
+import {
+  TOKEN_COOKIE_NAME,
+  getAuthCookieOptions,
+  getAuthClearCookieOptions,
+  logAuthCookieOperation,
+  logAuthFailure,
+} from "../config/cookieConfig.js";
 
 const setAuthCookie = (res, token, overrides = {}) => {
-  const options = getCookieOptions(overrides);
+  const options = getAuthCookieOptions(overrides);
   res.cookie(TOKEN_COOKIE_NAME, token, options);
+  logAuthCookieOperation("set", { cookie: TOKEN_COOKIE_NAME });
 };
 
 const isValidEmail = (email) => /^\S+@\S+\.\S+$/.test(email);
@@ -276,6 +237,7 @@ export const login = async (req, res) => {
     identifier = (identifier || username || email)?.trim();
 
     if (!identifier || !password) {
+      logAuthFailure(req, "missing credentials");
       return sendAuthResponse(res, 400, false, "Enter identifier & password");
     }
 
@@ -291,16 +253,19 @@ export const login = async (req, res) => {
     }).select("+password");
 
     if (!user) {
+      logAuthFailure(req, "invalid credentials", { stage: "user_lookup" });
       return sendAuthResponse(res, 400, false, "Invalid credentials");
     }
 
     if (user.isBlocked) {
+      logAuthFailure(req, "account blocked", { userId: String(user._id) });
       return sendAuthResponse(res, 403, false, "Account blocked");
     }
 
     const match = await bcrypt.compare(password, user.password);
 
     if (!match) {
+      logAuthFailure(req, "invalid credentials", { stage: "password", userId: String(user._id) });
       return sendAuthResponse(res, 400, false, "Invalid credentials");
     }
 
@@ -322,23 +287,19 @@ export const login = async (req, res) => {
     });
 
   } catch (err) {
-    console.error("LOGIN ERROR:", err.message);
+    logger.error("login failed", {
+      error: err?.message || String(err),
+      path: req.originalUrl,
+      origin: req.headers.origin || null,
+    });
     return sendAuthResponse(res, 500, false, "Internal server error");
   }
 };
 
 export const logout = async (req, res) => {
-  const isProd =
-    process.env.NODE_ENV === "production" ||
-    process.env.RAILWAY_ENVIRONMENT === "production";
-  const clearOptions = {
-    httpOnly: true,
-    secure: isProd,
-    sameSite: isProd ? "none" : "lax",
-    path: "/",
-  };
-
+  const clearOptions = getAuthClearCookieOptions();
   res.clearCookie(TOKEN_COOKIE_NAME, clearOptions);
+  logAuthCookieOperation("cleared", { cookie: TOKEN_COOKIE_NAME });
 
   return sendAuthResponse(res, 200, true, "Logged out successfully");
 };
