@@ -9,7 +9,7 @@ export const getNextWalletIndex = async () => {
       { key: "wallet_index" },
       { $inc: { value: 1 } },
       {
-        new: true,
+        returnDocument: "after",
         upsert: true
       }
     );

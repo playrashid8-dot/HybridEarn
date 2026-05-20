@@ -161,7 +161,7 @@ export async function getLastProcessedBlock() {
   await HybridSetting.findOneAndUpdate(
     { key: "hybridLastProcessedBlock" },
     { $set: { value: startBlock } },
-    { upsert: true, new: true }
+    { upsert: true, returnDocument: "after" }
   );
 
   return startBlock;
@@ -171,7 +171,7 @@ export async function saveLastProcessedBlock(blockNumber) {
   await HybridSetting.findOneAndUpdate(
     { key: "hybridLastProcessedBlock" },
     { $set: { value: Number(blockNumber) } },
-    { upsert: true, new: true }
+    { upsert: true, returnDocument: "after" }
   );
 }
 
@@ -312,7 +312,7 @@ export async function processDepositLog(log, iface, usersByWallet, options = {})
       await HybridSetting.findOneAndUpdate(
         { key: "hybridLastDetectedTxAt" },
         { $set: { value: Date.now() } },
-        { upsert: true, new: true }
+        { upsert: true, returnDocument: "after" }
       );
     } catch (_) {
       /* non-fatal */

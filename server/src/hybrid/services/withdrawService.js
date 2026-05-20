@@ -736,7 +736,7 @@ export const requestHybridWithdrawal = async (
           },
         },
         {
-          new: true,
+          returnDocument: "after",
           session,
         }
       );
@@ -803,7 +803,7 @@ export const requestHybridWithdrawal = async (
             },
           },
           {
-            new: true,
+            returnDocument: "after",
             session,
           }
         );
@@ -1651,7 +1651,7 @@ const createPayoutRuntime = (overrides = {}) => ({
         },
       },
       {
-        new: true,
+        returnDocument: "after",
         sort: { forcePayout: -1, approvedAt: 1, createdAt: 1 },
       }
     ).lean(),
@@ -1664,7 +1664,7 @@ const createPayoutRuntime = (overrides = {}) => ({
           payoutWallet,
         },
       },
-      { new: true }
+      { returnDocument: "after" }
     ).lean(),
   storePayoutTxHash: (withdrawalId, txHash) =>
     HybridWithdrawal.findOneAndUpdate(
@@ -1680,7 +1680,7 @@ const createPayoutRuntime = (overrides = {}) => ({
           payoutStatus: "verifying",
         },
       },
-      { new: true }
+      { returnDocument: "after" }
     ).lean(),
   getIdempotencyRecord,
   getCompletedIdempotency,
@@ -2103,7 +2103,7 @@ export const adminApproveHybridWithdrawal = async (withdrawalId, adminId = null)
             ...(adminId ? { approvedBy: adminId } : {}),
           },
         },
-        { new: true, session }
+        { returnDocument: "after", session }
       );
 
       if (!updated) {
@@ -2168,7 +2168,7 @@ export const adminForcePayoutHybridWithdrawal = async (withdrawalId, adminId = n
               ...(adminId ? { approvedBy: adminId } : {}),
             },
           },
-          { new: true, session }
+          { returnDocument: "after", session }
         );
 
         if (!approved) {
@@ -2189,7 +2189,7 @@ export const adminForcePayoutHybridWithdrawal = async (withdrawalId, adminId = n
               ...(adminId ? { approvedBy: adminId } : {}),
             },
           },
-          { new: true, session }
+          { returnDocument: "after", session }
         );
 
         if (!forced) {
@@ -2333,7 +2333,7 @@ const markHybridWithdrawalPaidAfterAutoVerification = async (withdrawalId, txHas
           payoutLastError: "",
         },
       },
-      { new: true, session }
+      { returnDocument: "after", session }
     );
 
     if (!paid) {
@@ -2353,7 +2353,7 @@ const markHybridWithdrawalPaidAfterAutoVerification = async (withdrawalId, txHas
           lastWithdrawRequest: nowPaid,
         },
       },
-      { new: true, session }
+      { returnDocument: "after", session }
     );
 
     if (!updatedUser) {
@@ -2462,7 +2462,7 @@ export const adminRejectHybridWithdrawal = async (withdrawalId) => {
         ],
       },
       { $set: { status: "rejected" } },
-      { new: true, session }
+      { returnDocument: "after", session }
     );
 
     if (!updatedWithdrawal) {
@@ -2482,7 +2482,7 @@ export const adminRejectHybridWithdrawal = async (withdrawalId) => {
         },
         $set: { lastWithdrawRequest: null },
       },
-      { new: true, session }
+      { returnDocument: "after", session }
     );
 
     if (!updatedUser) {
@@ -2603,7 +2603,7 @@ export const adminRejectAllHybridWithdrawals = async (adminId) => {
           ],
         },
         { $set: { status: "rejected" } },
-        { new: true, session }
+        { returnDocument: "after", session }
       );
 
       if (!updatedWithdrawal) {
@@ -2623,7 +2623,7 @@ export const adminRejectAllHybridWithdrawals = async (adminId) => {
           },
           $set: { lastWithdrawRequest: null },
         },
-        { new: true, session }
+        { returnDocument: "after", session }
       );
 
       if (!updatedUser) {

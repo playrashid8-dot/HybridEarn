@@ -41,7 +41,7 @@ async function persistPollingMetric(key, value) {
     await HybridSetting.findOneAndUpdate(
       { key },
       { $set: { value } },
-      { upsert: true, new: true },
+      { upsert: true, returnDocument: "after" },
     );
   } catch (err) {
     logger.debug?.("Polling deposit metric persist skipped", {

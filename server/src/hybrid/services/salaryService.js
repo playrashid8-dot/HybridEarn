@@ -479,7 +479,7 @@ export const claimSalary = async (userId) => {
               },
             },
             {
-              new: true,
+              returnDocument: "after",
               session,
               runValidators: true,
             }

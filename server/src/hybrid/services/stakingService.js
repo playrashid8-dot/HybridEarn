@@ -66,7 +66,7 @@ export const createStake = async (userId, amount, planDays) => {
           },
         },
         {
-          new: true,
+          returnDocument: "after",
           session,
         }
       );
@@ -143,7 +143,7 @@ export const claimStake = async (userId, stakeId) => {
           },
         },
         {
-          new: true,
+          returnDocument: "after",
           session,
         }
       );
@@ -161,7 +161,7 @@ export const claimStake = async (userId, stakeId) => {
           },
         },
         {
-          new: true,
+          returnDocument: "after",
           session,
         }
       );

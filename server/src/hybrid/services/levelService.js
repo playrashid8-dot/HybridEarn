@@ -60,7 +60,7 @@ export const syncUserLevel = async (userId, session = null) => {
     },
     update,
     {
-      new: true,
+      returnDocument: "after",
       ...(session ? { session } : {}),
     }
   );

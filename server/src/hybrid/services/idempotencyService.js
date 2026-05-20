@@ -105,7 +105,7 @@ export async function completeIdempotentAction(type, key, response, session = nu
         lastError: "",
       },
     },
-    { new: true, ...(session ? { session } : {}) }
+    { returnDocument: "after", ...(session ? { session } : {}) }
   );
 }
 
@@ -128,7 +128,7 @@ export async function failIdempotentAction(type, key, error, session = null) {
         lastError: String(error?.message || error || "Financial action failed").slice(0, 500),
       },
     },
-    { new: true, ...(session ? { session } : {}) }
+    { returnDocument: "after", ...(session ? { session } : {}) }
   );
 }
 
@@ -197,7 +197,7 @@ export async function markIdempotencyProcessing(type, key, session = null) {
           response: null,
         },
       },
-      { upsert: true, new: true, ...(session ? { session } : {}) }
+      { upsert: true, returnDocument: "after", ...(session ? { session } : {}) }
     );
   } catch (err) {
     if (err?.code !== 11000) {

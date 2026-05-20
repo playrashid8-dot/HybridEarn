@@ -685,7 +685,7 @@ export async function repairIncompleteRoiClaim(jobId, options = {}) {
         ],
       },
       { $set: { lastDailyClaim: new Date(refreshed.ledgerEntries[0].createdAt) } },
-      { new: true, session },
+      { returnDocument: "after", session },
     ).select("lastDailyClaim");
     return { updated: Boolean(updated), evidence: refreshed };
   });

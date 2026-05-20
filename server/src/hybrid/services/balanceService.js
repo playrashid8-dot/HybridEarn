@@ -142,7 +142,7 @@ export const creditActiveUsdtBalance = async ({
       },
     },
     {
-      new: true,
+      returnDocument: "after",
       ...(session ? { session } : {}),
     }
   ).select("username email balance depositBalance rewardBalance totalEarnings");

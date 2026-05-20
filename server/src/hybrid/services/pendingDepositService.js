@@ -36,7 +36,7 @@ export async function recordPendingDepositFailure(payload = {}) {
       },
       $inc: { attempts: 1 },
     },
-    { upsert: true, new: true }
+    { upsert: true, returnDocument: "after" }
   );
 }
 
@@ -55,7 +55,7 @@ export async function markPendingDepositCredited(txHash) {
         lastError: "",
       },
     },
-    { new: true }
+    { returnDocument: "after" }
   );
 }
 

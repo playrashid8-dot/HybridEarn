@@ -182,7 +182,7 @@ export const claimDailyRoi = async (userId) => {
               },
             },
             {
-              new: true,
+              returnDocument: "after",
               ...(session ? { session } : {}),
             },
           );

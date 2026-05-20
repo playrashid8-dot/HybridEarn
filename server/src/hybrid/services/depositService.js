@@ -153,7 +153,7 @@ export const creditHybridDeposit = async ({
             },
           },
           {
-            new: true,
+            returnDocument: "after",
             session,
           }
         );
@@ -196,7 +196,7 @@ export const creditHybridDeposit = async ({
           },
         },
         {
-          new: true,
+          returnDocument: "after",
           session,
         }
       );
@@ -212,7 +212,7 @@ export const creditHybridDeposit = async ({
           },
         },
         {
-          new: true,
+          returnDocument: "after",
           session,
         }
       );
@@ -288,12 +288,12 @@ export const creditHybridDeposit = async ({
           HybridSetting.findOneAndUpdate(
             { key: HYBRID_SETTING_LAST_PROCESSED_DEPOSIT_AT },
             { $set: { value: now } },
-            { upsert: true, new: true }
+            { upsert: true, returnDocument: "after" }
           ),
           HybridSetting.findOneAndUpdate(
             { key: HYBRID_SETTING_LAST_PROCESSED_DEPOSIT_TX },
             { $set: { value: normalizedTxHash } },
-            { upsert: true, new: true }
+            { upsert: true, returnDocument: "after" }
           ),
         ]);
       } catch (persistErr) {

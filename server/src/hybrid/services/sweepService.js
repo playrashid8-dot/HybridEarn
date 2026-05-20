@@ -360,7 +360,7 @@ async function executeSweepForDeposit(depositStub) {
           errorMessage: "",
         },
       },
-      { new: true },
+      { returnDocument: "after" },
     );
 
     if (!updated) {

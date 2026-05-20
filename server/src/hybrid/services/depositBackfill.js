@@ -263,7 +263,7 @@ export async function runFullRecoveryScan() {
     await HybridSetting.findOneAndUpdate(
       { key: HYBRID_SETTING_LAST_RECOVERY_STARTED_AT },
       { $set: { value: Date.now() } },
-      { upsert: true, new: true },
+      { upsert: true, returnDocument: "after" },
     ).catch(() => {});
 
     recoveryLoop: while (true) {
@@ -378,7 +378,7 @@ export async function runFullRecoveryScan() {
         await HybridSetting.findOneAndUpdate(
           { key: HYBRID_SETTING_LAST_RECOVERY_BLOCK },
           { $set: { value: to } },
-          { upsert: true, new: true },
+          { upsert: true, returnDocument: "after" },
         );
       } catch (err) {
         logger.error("Full recovery mongo checkpoint persistence failed mid-scan", {
@@ -438,7 +438,7 @@ export async function runFullRecoveryScan() {
     await HybridSetting.findOneAndUpdate(
       { key: HYBRID_SETTING_LAST_RECOVERY_FINISHED_AT },
       { $set: { value: Date.now() } },
-      { upsert: true, new: true },
+      { upsert: true, returnDocument: "after" },
     ).catch(() => {});
     if (lockHeld && useRedisLock && redisConnected) {
       try {
