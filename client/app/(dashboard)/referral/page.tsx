@@ -54,7 +54,7 @@ export default function Referral() {
   }, []);
 
   const origin =
-    typeof window !== "undefined" ? window.location.origin : "http://localhost:3000";
+    typeof window !== "undefined" ? window.location.origin : "process.env.NEXT_PUBLIC_SITE_URL";
   const link = `${origin}/signup?ref=${stats?.referralCode || user?.referralCode || ""}`;
 
   const copyLink = async () => {
