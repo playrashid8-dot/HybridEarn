@@ -37,7 +37,7 @@ function normalizeStoredDismissRaw(raw: string | null): string {
 }
 
 const DEPOSIT_BONUS_ROWS: { left: string; right: string }[] = [
-  { left: "50 USDT", right: "7 USDT" },
+  { left: "50 USDT", right: "8 USDT" },
   { left: "100 USDT", right: "13 USDT" },
   { left: "150 USDT", right: "18 USDT" },
   { left: "200 USDT", right: "25 USDT" },
