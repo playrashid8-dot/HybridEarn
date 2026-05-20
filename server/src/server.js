@@ -75,7 +75,7 @@ const corsDefaultOrigins = [
   "https://www.hybridearn.com",
   "https://novacentral.vercel.app",
   "http://localhost:3000",
-  "http://72.62.193.42",
+  "http://72.62.193.42:3000",
 ];
 const corsExtraOrigins = String(process.env.CLIENT_ORIGINS || "")
   .split(",")
